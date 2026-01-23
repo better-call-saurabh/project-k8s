@@ -1,0 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: waf
+  namespace: todo
+spec:
+  headers:
+    customRequestHeaders:
+      X-WAF-Protection: "enabled"
+      X-Content-Type-Options: "nosniff"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ratelimit
+  namespace: todo
+spec:
+  rateLimit:
+    average: 10
+    burst: 20

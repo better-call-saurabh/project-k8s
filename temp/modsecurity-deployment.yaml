@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modsecurity
+  namespace: todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: modsecurity
+  template:
+    metadata:
+      labels:
+        app: modsecurity
+    spec:
+      containers:
+      - name: modsecurity
+        image: owasp/modsecurity-crs:nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: modsecurity-config
+          mountPath: /etc/modsecurity.d/custom
+        - name: modsecurity-template
+          mountPath: /etc/nginx/templates
+      volumes:
+      - name: modsecurity-config
+        configMap:
+          name: modsecurity-config
+          # Only populate the "custom" directory
+          items:
+            - key: modsecurity.conf
+              path: modsecurity.conf
+            - key: rules-local.rules
+              path: rules-local.rules
+            - key: crs-setup.conf
+              path: crs-setup.conf
+      - name: modsecurity-template
+        emptyDir: {}

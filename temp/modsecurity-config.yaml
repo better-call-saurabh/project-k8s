@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: modsecurity-config
+  namespace: todo
+data:
+  modsecurity.conf: |
+    SecRuleEngine On
+    SecRequestBodyAccess On
+    SecResponseBodyAccess Off
+    SecAuditEngine RelevantOnly
+    SecAuditLog /var/log/modsecurity_audit.log
+    SecAuditLogParts ABIJDEFHZ
+
+    # Minimal SQLi test rule
+    SecRule ARGS "(union.*select|select.*from|drop\s+table|information_schema)" \
+      "id:1000001,phase:2,deny,status:403,msg:'Possible SQL Injection detected'"
+
+  rules-local.rules: |
+    alert tcp any any -> any 80 (msg:"SQL Injection - basic string"; content:"select"; nocase; http_uri; sid:2000001; rev:1;)
+    alert http any any -> any any (msg:"Brute force login attempts (POST flood)"; http_method; content:"POST"; threshold: type threshold, track by_src, count 20, seconds 60; sid:2000002; rev:1;)
+    alert tcp any any -> any any (msg:"Possible SYN flood"; flags:S; threshold: type both, track by_dst, count 200, seconds 10; sid:2000003; rev:1;)
+
+  crs-setup.conf: |
+    SecAction "id:900130,phase:1,nolog,pass,ctl:ruleEngine=On"

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: todo
+  labels:
+    app: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+        - name: fluentd
+          image: fluent/fluentd:v1.14-debian-1
+          env:
+            - name: FLUENTD_ARGS
+              value: "-q"
+          volumeMounts:
+            - name: var-log
+              mountPath: /var/log
+            - name: fluentd-config
+              mountPath: /fluentd/etc
+      volumes:
+        - name: var-log
+          hostPath:
+            path: /var/log
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: todo
+data:
+  fluent.conf: |
+    <source>
+      @type tail
+      path /var/log/suricata/eve.json
+      pos_file /var/log/fluentd-suricata.pos
+      tag suricata.eve
+      <parse>
+        @type json
+      </parse>
+    </source>
+
+    <match **>
+      @type stdout
+    </match>

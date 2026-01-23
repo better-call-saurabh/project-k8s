@@ -1,0 +1,9 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: todo-waf-basic
+  namespace: todo
+spec:
+  headers:
+    customRequestHeaders:
+      X-WAF-Protection: "enabled"

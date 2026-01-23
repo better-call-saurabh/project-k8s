@@ -1,0 +1,7 @@
+ignore-unfixed: true
+vuln-type:
+  - library
+  - os
+severity:
+  - CRITICAL
+  - HIGH

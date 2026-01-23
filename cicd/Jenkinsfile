@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "todo-app"
+        IMAGE_TAG  = "latest"
+        SONAR_HOME = tool "sonar"
+        SONAR_PROJECT_KEY = "todo-app"
+    }
+
+    stages {
+
+        stage("Clone Code from GitHub") {
+            steps {
+                git url: "https://github.com/RohanPatil198/kubernetes-ultimate.git", branch: "main"
+            }
+        }
+
+        stage("SonarQube Quality Analysis") {
+            steps {
+                withSonarQubeEnv("sonar") {
+                    sh """
+                    ${SONAR_HOME}/bin/sonar-scanner \
+                    -Dsonar.projectName=todo-app \
+                    -Dsonar.projectKey=todo-app
+                    """
+                }
+            }
+        }
+
+        stage("OWASP Dependency Check") {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dc'
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            }
+        }
+
+        stage("Sonar Quality Gate Scan") {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: false
+                }
+            }
+        }
+
+        stage("Build Docker Image") {
+            steps {
+                echo "Building Docker image..."
+                sh """
+                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile .
+                """
+            }
+        }
+
+        stage("Trivy Image Scan") {
+            steps {
+                echo "Running Trivy vulnerability scan..."
+                sh """
+                trivy image --severity HIGH,CRITICAL ${IMAGE_NAME}:${IMAGE_TAG}
+                """
+            }
+        }
+
+        stage("Deploy to Kubernetes (k3s)") {
+    		steps {
+		        sh """
+		        ./k3s.sh
+		        """
+   			 }
+		}
+    }
+}

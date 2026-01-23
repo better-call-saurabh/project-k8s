@@ -1,0 +1,25 @@
+data:
+  suricata.yaml: |
+    %YAML 1.1
+    ---
+    vars:
+      address-groups:
+        HOME_NET: "any"
+        EXTERNAL_NET: "any"
+
+    logging:
+      default-log-level: info
+
+    outputs:
+      - fast:
+          enabled: yes
+          filename: fast.log
+
+    rule-files:
+      - /etc/suricata/rules/local.rules
+
+    af-packet:
+      - interface: eth0
+        cluster-id: 99
+        cluster-type: cluster_flow
+        defrag: yes
