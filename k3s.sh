@@ -64,3 +64,6 @@ sleep 20
 kubectl get all -n todo
 kubectl get all -n monitoring
 
+echo "made by pruthviraj ingale all alone "
+echo "all rights reserved "
+echo " tiger group , sunbeam "
