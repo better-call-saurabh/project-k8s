@@ -1,15 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-waf
+  name: todo-ingress
   namespace: todo
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.middlewares: "waf@kubernetescrd"
 spec:
   ingressClassName: traefik
   rules:
-    - host: testwaf.local
+    - host: todo.local
       http:
         paths:
           - path: /
