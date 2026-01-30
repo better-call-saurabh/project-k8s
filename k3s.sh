@@ -20,6 +20,9 @@ kubectl apply -f k8s/mysql-deployment.yaml
 kubectl apply -f k8s/todo-deployment.yaml
 kubectl apply -f k8s/todo-service.yaml
 kubectl apply -f k8s/ingress.yaml
+kubectl apply -f k8s/prometheus-ingress.yaml
+kubectl apply -f k8s/grafana-ingress.yaml
+
 # kubectl apply -f k8s/test-rate-limit.yaml
 # kubectl apply -f k8s/suricata-config.yaml
 # kubectl apply -f k8s/suricata-daemonset.yaml
@@ -34,7 +37,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 
 helm repo update
 #create namespace
-kubectl create ns monitoring
+# kubectl create ns monitoring
 # install prometheus from the helm repo
 helm install prometheus prometheus-community/prometheus -n monitoring
 
