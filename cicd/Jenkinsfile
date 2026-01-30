@@ -12,7 +12,8 @@ pipeline {
 
         stage("Clone Code from GitHub") {
             steps {
-                git url: "https://github.com/RohanPatil198/kubernetes-ultimate.git", branch: "main"
+                sh 'rm -rf *'
+                git url: "https://github.com/better-call-saurabh/project-k8s.git", branch: "main"
             }
         }
 
