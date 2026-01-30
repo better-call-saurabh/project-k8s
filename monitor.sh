@@ -27,3 +27,6 @@ kubectl patch svc grafana -n monitoring   -p '{"spec":{"type":"NodePort"}}'
 # copy admin password from the file
 # kubectl edit secret grafana
 kubectl patch secret grafana -n monitoring  -p '{"data":{"admin-password":"YWRtaW5AMTIz"}}'
+
+kubectl apply -f k8s/prometheus-ingress.yaml
+kubectl apply -f k8s/grafana-ingress.yaml

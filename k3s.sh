@@ -20,8 +20,7 @@ kubectl apply -f k8s/mysql-deployment.yaml
 kubectl apply -f k8s/todo-deployment.yaml
 kubectl apply -f k8s/todo-service.yaml
 kubectl apply -f k8s/ingress.yaml
-kubectl apply -f k8s/prometheus-ingress.yaml
-kubectl apply -f k8s/grafana-ingress.yaml
+
 
 # kubectl apply -f k8s/test-rate-limit.yaml
 # kubectl apply -f k8s/suricata-config.yaml
