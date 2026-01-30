@@ -33,9 +33,43 @@ kubectl apply -f k8s/grafana-ingress.yaml
 # kubectl apply -f k8s/grafana-service.yaml
 
 # add the prometheus helm repo
-# 
+# helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
-#!/bin/bash
+# helm repo update
+# #create namespace
+# kubectl create ns monitoring || true  
+# # install prometheus from the helm repo
+# helm install prometheus prometheus-community/prometheus -n monitoring
+
+# # update the prometheus service's type to NodePort
+# # kubectl edit service/prometheus-server
+# kubectl patch svc prometheus-server -n monitoring -p '{"spec":{"type":"NodePort"}}'
+# ## grafana
+# helm repo add grafana https://grafana.github.io/helm-charts
+
+# # update the repo
+# helm repo update
+
+# # install grafana
+# helm install grafana grafana/grafana -n monitoring
+
+# # update the grafana service's type to NodePort
+# # kubectl edit service/grafana
+# kubectl patch svc grafana -n monitoring   -p '{"spec":{"type":"NodePort"}}'
+
+# # find the grafana admin password
+# # copy admin password from the file
+# # kubectl edit secret grafana
+# kubectl patch secret grafana -n monitoring  -p '{"data":{"admin-password":"YWRtaW5AMTIz"}}'
+
+# sleep 20
+
+# kubectl get all -n todo
+# kubectl get all -n monitoring
+
+# echo "made by pruthviraj ingale all alone "
+# echo "all rights reserved "
+# echo " tiger group , sunbeam "
 
 set -e
 
@@ -43,7 +77,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add grafana https://grafana.github.io/helm-charts || true
 helm repo update || true
 
-kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f - || true
 
 helm status prometheus -n monitoring >/dev/null 2>&1 || \
 helm install prometheus prometheus-community/prometheus -n monitoring
@@ -64,3 +98,4 @@ sleep 10
 
 kubectl get all -n todo
 kubectl get all -n monitoring
+
