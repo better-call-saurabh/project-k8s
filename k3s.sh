@@ -62,40 +62,21 @@ kubectl apply -f k8s/grafana-ingress.yaml
 # # kubectl edit secret grafana
 # kubectl patch secret grafana -n monitoring  -p '{"data":{"admin-password":"YWRtaW5AMTIz"}}'
 
-# sleep 20
 
-# kubectl get all -n todo
-# kubectl get all -n monitoring
+
 
 # echo "made by pruthviraj ingale all alone "
 # echo "all rights reserved "
 # echo " tiger group , sunbeam "
 
-set -e
+if kubectl get ns monitoring >/dev/null 2>&1; then
+  echo "[INFO] Monitoring stack already installed"
+else
+  echo "[INFO] Installing monitoring stack"
+  bash monitor.sh
+fi
 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts || true
-helm repo add grafana https://grafana.github.io/helm-charts || true
-helm repo update || true
-
-kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f - || true
-
-helm status prometheus -n monitoring >/dev/null 2>&1 || \
-helm install prometheus prometheus-community/prometheus -n monitoring
-
-helm status grafana -n monitoring >/dev/null 2>&1 || \
-helm install grafana grafana/grafana -n monitoring
-
-kubectl patch svc prometheus-server -n monitoring \
-  -p '{"spec":{"type":"NodePort"}}' || true
-
-kubectl patch svc grafana -n monitoring \
-  -p '{"spec":{"type":"NodePort"}}' || true
-
-kubectl patch secret grafana -n monitoring \
-  -p '{"data":{"admin-password":"YWRtaW5AMTIz"}}' || true
-
-sleep 10
+sleep 20
 
 kubectl get all -n todo
 kubectl get all -n monitoring
-
