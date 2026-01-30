@@ -65,9 +65,9 @@ kubectl apply -f k8s/grafana-ingress.yaml
 
 
 
-# echo "made by pruthviraj ingale all alone "
-# echo "all rights reserved "
-# echo " tiger group , sunbeam "
+echo "made by pruthviraj ingale all alone "
+echo "all rights reserved "
+echo " tiger group , sunbeam "
 
 if kubectl get ns monitoring >/dev/null 2>&1; then
   echo "[INFO] Monitoring stack already installed"
