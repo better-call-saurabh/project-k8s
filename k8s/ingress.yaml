@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: 
+    - host: todo.local
       http:
         paths:
           - path: /
@@ -16,6 +16,7 @@ spec:
                 name: todo-service
                 port:
                   number: 5000
+
 # apiVersion: networking.k8s.io/v1
 # kind: Ingress
 # metadata:
